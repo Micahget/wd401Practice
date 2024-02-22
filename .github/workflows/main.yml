@@ -1,18 +1,60 @@
-name: Unit Tests
-
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches: [main]
-
+name: Configuring a Node.js application with a PostgreSQL database
+on: push
+env:
+  PG_DATABASE: sp-sc-dev
+  PG_USER: postgres
+  PG_PASSWORD: mypostgres
 jobs:
-  Jest:
+  # Label of the container job
+  run-tests:
+    # Containers must run in Linux based operating systems
     runs-on: ubuntu-latest
+
+    # Service containers to run with `container-job`
+    services:
+      # Label used to access the service container
+      postgres:
+        # Docker Hub image
+        image: postgres:11.7
+        # Provide the password for postgres
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: mypostgres
+          POSTGRES_DB: sp-sc-dev
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
     steps:
-      - uses: actions/checkout@v1
-      - name: Run Tests
+      # Downloads a copy of the code in your repository before running CI tests
+      - name: Check out repository code
+        uses: actions/checkout@v3
+
+      # Performs a clean installation of all dependencies in the `package.json` file
+      # For more information, see https://docs.npmjs.com/cli/ci.html
+      - name: Install dependencies
+        run: cd ./ && npm ci
+
+      - name: Run unit tests
+        run: cd ./ && npm test
+      - name: Run the app
+        id: run-app
         run: |
-          npm install 
-          npm test
+          cd ./
+          npm install
+          npx sequelize-cli db:drop
+          npx sequelize-cli db:create
+          npx sequelize-cli db:migrate
+          PORT=3000 npm start &
+          sleep 5
+
+      - name: Run integration tests
+        run: |
+          cd ./
+          npm install cypress cypress-json-results
+          npx cypress run --env STUDENT_SUBMISSION_URL="http://localhost:3000/"
