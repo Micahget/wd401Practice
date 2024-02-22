@@ -164,7 +164,7 @@ app.get("/error", async (request, response) => {
     });
 });
 
-// *********************************SignUp and SignOut*********************************************
+// **************SignUp and SignOut******************************
 // render the login page
 app.get("/signup", function (request, response) {
     response.render("signup", {
