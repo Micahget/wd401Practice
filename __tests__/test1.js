@@ -86,4 +86,14 @@ describe("Sport Scheduler", function () {
     expect(response.statusCode).toBe(302);
   }); 
 
+  // test to view all sessions
+  test("view all sessions", async () => {
+    const agent = request.agent(server);
+    await login(agent, "John@gmail.com", "123456");
+    let res = await agent.get("/allSessions");
+    expect(res.statusCode).toBe(200);
+  }
+  );
+  
+
 });
