@@ -56,5 +56,5 @@ jobs:
       - name: Run integration tests
         run: |
           cd ./
-          npm install cypress cypress-json-results
-          npx cypress run --env STUDENT_SUBMISSION_URL="http://localhost:3000/"
+          npm install 
+          npm run test
