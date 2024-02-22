@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./css/styles.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <title><%= title %></title>
+</head>
+
+<body>
+  <div class="grid grid-cols-1 md:grid-cols-6 p-8">
+    <div class="md:col-start-3 md:col-span-2">
+        <div class="border rounded-lg p-4 bg-white">
+          <a class="justify-center" href="/scheduler">
+            <p class="py-2 text-3xl font-bold text-center">Sports Scheduler</p>
+          </a>
+          <p class="py-2 text-lg font-bold">Hi, <%= user.firstName %>! Welcome.</p>
+          <% if(user.role === 'admin' || user.role === 'superadmin'){ %>
+          <p class="py-2">
+            <a class="text-green-400 font-bold" href="/newSport">Add Sport</a>
+          </p>
+          <p class="py-2">
+            <a class="text-green-400 font-bold" href="/sessionReport">View Report</a>
+          </p>
+          <% } %>
+          <p class="py-2">
+            <a class="text-green-400 font-bold" href="/about">About</a>
+          </p>
+          <h2 class="text-lg font-medium text-gray-900 mb-2 font-medium">List of Sports</h2>
+          <div class="flex flex-col gap-2">
+            <% const sports=sessions.map(session=> session.sport);
+              const uniqueSports = [...new Set(sports.filter(Boolean))];
+              uniqueSports.forEach(sport => { %>
+            <a href="/sports/<%= sport %>" class="">
+              <div
+                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded capitalize w-auto">
+                <%= sport %>
+              </div>
+            </a>
+            <% }); %>
+          </div>
+          
+           
+          <a class="text-red-400 items-center" href="/signout">
+            <p class="py-2">
+              
+            sign-out
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+                  <path fill-rule="evenodd" d="M7.5 3.75A1.5 1.5 0 006 5.25v13.5a1.5 1.5 0 001.5 1.5h6a1.5 1.5 0 001.5-1.5V15a.75.75 0 011.5 0v3.75a3 3 0 01-3 3h-6a3 3 0 01-3-3V5.25a3 3 0 013-3h6a3 3 0 013 3V9A.75.75 0 0115 9V5.25a1.5 1.5 0 00-1.5-1.5h-6zm5.03 4.72a.75.75 0 010 1.06l-1.72 1.72h10.94a.75.75 0 010 1.5H10.81l1.72 1.72a.75.75 0 11-1.06 1.06l-3-3a.75.75 0 010-1.06l3-3a.75.75 0 011.06 0z" clip-rule="evenodd" />
+                </svg>
+            </p>
+          </a>
+          
+        </div>
+    </div>
+  </div>
+  <footer class="bg-gray-200 py-4 mt-auto">
+    <div class="container mx-auto px-4">
+      <div class="flex flex-wrap items-center justify-between">
+        <div class="text-gray-600">
+          <span class="text-sm">&copy; 2023 Sports Scheduler. All rights reserved.</span>
+        </div>
+        <div class="text-gray-600">
+          <a href="/scheduler" class="mr-4 hover:text-gray-800">Terms of Use</a>
+          <a href="/scheduler" class="mr-4 hover:text-gray-800">Privacy Policy</a>
+        </div>
+        <div class="text-gray-600">
+          Developed by <span class="font-bold">Mikiyas Getachew</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+  
+</body>
+
+</html>

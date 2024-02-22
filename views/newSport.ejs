@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./css/styles.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="csrf-token" content="<%= csrfToken %>">
+
+  <title>
+    <%= title %>
+  </title>
+</head>
+
+<body>
+  <div class="grid grid-cols-6">
+    <div class="col-start-2 col-span-4">
+      <div class="border rounded-lg p-4 bg-white">
+        <a href="/scheduler">
+          <h1 class="text-2xl font-medium text-gray-900 mb-4">Add New Sport</h1>
+        </a>
+        <form method="post" action="/newSport" class="flex flex-col gap-4">
+          <!--add csrf token field-->
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <label for="sport" class="text-gray-900">Choose a sport:</label>
+          <div class="relative">
+            <select name="sport" id="sport"
+              class="py-2 px-4 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+              <option value="football">Football</option>
+              <option value="basketball">Basketball</option>
+              <option value="cricket">Cricket</option>
+              <option value="soccer">Soccer</option>
+              <option value="volleyball">Volleyball</option>
+              <option value="swimming">Swimming</option>
+              <option value="boxing">Boxing</option>
+              <option value="baseball">Baseball</option>
+              <option value="golf">Golf</option>
+              <option value="rugby">Rugby</option>
+            </select>
+            <div class="flex justify-between p-4">
+              <button type="submit"
+                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">ADD</button>
+              <button
+                class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50">
+                <a href="/scheduler" class="text-gray-700">Go back</a>
+              </button>
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+</body>
+
+</html>

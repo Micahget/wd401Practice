@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./css/styles.css">
+  <meta name="csrf-token" content="<%= csrfToken %>">
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <title>
+    <%= title %>
+  </title>
+</head>
+<body>
+  <div class="min-h-screen bg-gray-100 flex flex-col justify-center items-center">
+    <div class="bg-white p-6 shadow-lg rounded-lg w-96">
+      <h1 class="text-gray-600 text-2xl font-bold mb-4">Session Report</h1>
+      <% var sportCount={}; // Loop through the sessions and count each sport 
+      sessions.forEach(session=> {
+        const { sport } = session;
+        if (sportCount[sport]) {
+        sportCount[sport]++;
+        } else {
+        sportCount[sport] = 1;
+        }
+        });
+        // Finding the sport with the highest count
+        let mostFamousSport;
+        let maxCount = 0;
+
+        for (const sport in sportCount) {
+        if (sportCount[sport] > maxCount) {
+        maxCount = sportCount[sport];
+        mostFamousSport = sport;
+        }
+        }
+        console.log(mostFamousSport);
+        %>
+
+        <div class="flex justify-between items-center mb-4">
+          <span class="text-gray-600">The most Famous Game:</span>
+          <span class="text-gray-900"><%= mostFamousSport %></span>
+        </div>
+
+        <div class="flex justify-between items-center mb-4">
+          <span class="text-gray-600">Number of count:</span>
+          <span class="text-gray-900"><%= maxCount %></span>
+        </div>
+        <div class="flex justify-between items-center mb-4">
+          <span class="text-gray-600">Number of Total Sessions:</span>
+          <span class="text-gray-900"><%= sessions.length %></span>
+        </div>
+
+        <div class="flex justify-between items-center mb-4">
+          <span class="text-gray-600">Number of User Accounts Created:</span>
+          <span class="text-gray-900"><%= user.length %></span>
+        </div>
+
+        <div class="flex justify-between items-center mb-4">
+          <span class="text-gray-600">Number of Active Session:</span>
+          <span class="text-gray-900"> <%= activeSession.length %></span>
+        </div>
+        <div class="flex justify-between items-center mb-4">
+          <span class="text-gray-600">Number of Canceled Session:</span>
+          <span class="text-gray-900"> <%= inactveSession.length %></span>
+        </div>
+        <div class="flex justify-between items-center mb-4">
+          <span class="text-gray-600">Number of Today's Session:</span>
+          <span class="text-gray-900"> <%= todaySessions.length %></span>
+        </div>
+        <div class="flex justify-between items-center mb-4">
+          <span class="text-gray-600">Number of Incoming Session:</span>
+          <span class="text-gray-900"> <%= futureSessions.length %></span>
+        </div>
+        <div class="flex justify-between items-center mb-4">
+          <span class="text-gray-600">Number of passed Session:</span>
+          <span class="text-gray-900"> <%= pastSessions.length %></span>
+        </div>
+        <% if (user.role == "superadmin" ) { %>
+        <div class="flex justify-center gap-4">
+          <div class="flex justify-between items-center mb-4">
+            <button class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50">
+              <a href="/displayUsers/" class="text-gray-700">View Users</a>
+            </button>
+          </div>
+          <% } %>
+          <div class="flex justify-between items-center mb-4">
+            <button class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50">
+              <a href="/scheduler/" class="text-gray-700">Go back</a>
+            </button>
+          </div>
+        </div>
+        
+    </div>
+  </div>
+</body>
+
+</html>

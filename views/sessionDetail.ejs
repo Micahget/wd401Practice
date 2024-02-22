@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="csrf-token" content="<%= csrfToken %>">
+  <link rel="stylesheet" href="./css/styles.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="csrf-token" content="<%= csrfToken %>">
+  <script>
+    var token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    function deleteSession(id) {
+      // console.log(id)
+      fetch(`/sports/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          _csrf: token,
+
+        })
+      }).then((result) => {
+        if (result.ok) {
+          window.location.href = '/sports/<%= session.sport %>'
+        }
+      }).catch((err) => console.error(err))
+    }
+    function addPlayer(sessionId, name, user) {
+      const inputId = `player-${sessionId}`;
+      const addedName = name + ',' + user;
+      fetch(`/sessionDetail/${sessionId}`, {
+        method: 'put',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          playerName: addedName,
+          _csrf: token
+        })
+      }).then(res => {
+        if (res.ok) {
+          window.location.reload()
+        }
+      })
+        .catch((err) => console.error(err))
+    }
+
+    function deletePlayer(sessionId, name, totalNames) {
+
+      const arrayOfPlayers = totalNames.split(",");
+      const index = arrayOfPlayers.indexOf(name);
+      let newName = arrayOfPlayers.splice(index, 1); // remove the player
+
+      newName = arrayOfPlayers.join(","); // convert array to string
+      console.log("newName: " + newName);
+      fetch(`/sessionDetail/${sessionId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          playerName: newName,
+          _csrf: token
+        })
+      }).then(res => {
+        if (res.ok) {
+          window.location.reload()
+        }
+      })
+        .catch((err) => console.error(err))
+    }
+    // cancelSession
+    function cancelSession(sessionId) {
+      const reason = document.getElementById(`cancel-reason-${sessionId}`).value;
+      const canceled = true;
+      fetch(`/sessionDetail/${sessionId}`, {
+        method: 'Delete',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          reason: reason,
+          active: canceled,
+          _csrf: token
+        })
+      }).then(res => {
+        if (res.ok) {
+          window.location.reload()
+        }
+      })
+        .catch((err) => console.error(err))
+    }
+  </script>
+  <title>
+    <%= title %>
+  </title>
+</head>
+
+<body class="bg-green-100">
+  <div class="container mx-auto mt-6 mb-12 p-6 bg-white rounded-lg shadow-lg">
+    <div class="flex items-center justify-between">
+      <a href="/scheduler">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6">Session Details</h1>
+      </a>
+      <% if(session.id===User.id || User.role==='admin' || 'superadmin' ) { %>
+
+        <div class="flex items-center space-x-2">
+          <% if(session.active) { %>
+
+            <a href="/updateSession/<%= session.sport %>/<%= session.id %>"
+              class="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded-md text-gray-800 text-sm">Edit</a>
+            <% } %>
+              <a href="#" onclick="deleteSession('<%= session.id %>')"
+                class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-md text-white text-sm">Delete</a>
+        </div>
+        <% } %>
+    </div>
+    <p class="text-gray-700">This is <span class="text-green-400">
+        <%= session.sport %>
+      </span> session</p>
+
+    <div class="mt-4 flex items-center space-x-2">
+      <p class="text-gray-700">The session will be held at</p>
+      <p class="font-bold text-gray-800">
+        <%= session.place %>
+      </p>
+    </div>
+    <p class="mt-4 text-gray-700">Total Players Possible: <span class="text-green-400">
+        <%= session.totalPlayers %>
+      </span> </p>
+    <div class="mt-4 flex flex-wrap gap-2">
+
+      <% const playerNames=session.playerName; %>
+
+        <% const arrayOfPlayers=playerNames.split(","); %>
+          <% // arrayOfPlayers.forEach(function(player, index) { %>
+            <% for(let i=0; i < arrayOfPlayers.length; i++) { %>
+              <div class="bg-gray-200 flex items-center px-3 py-1 rounded-full space-x-2 text-gray-700">
+                <span>
+                  <%= arrayOfPlayers[i] %>
+                </span>
+                <% if ( dbUser.some(db=> db.firstName === arrayOfPlayers[i]) && session.userId === User.id){
+                  // this method means if the user from the array matches with the firstName in user db and the if that
+                  //user is the one who created the session it will displa organazer. I am really surprised by my self
+                  //that I get this Idea%>
+                  <span class="bg-green-100 text-gray-400 text-xs px-1 rounded-full">Organizer</span>
+                  <% } %>
+                    <% console.log("player: " + arrayOfPlayers[i]) %>
+                  <!--the button is to delete the player from the session-->
+                 <% if(session.userId === User.id || User.role === 'admin' || User.role === 'superadmin' ) { %>
+                  <button class=" hover:text-red-600 outline-none focus:outline-none"
+                      onclick=" deletePlayer('<%=session.id %>', '<%= arrayOfPlayers[i] %>', '<%= session.playerName %>')">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
+                        <path fill-rule="evenodd"
+                          d="M10 18a8 8 0 100-16 8 8 0 000 16zM6.75 9.25a.75.75 0 000 1.5h6.5a.75.75 0 000-1.5h-6.5z"
+                          clip-rule="evenodd" />
+                      </svg>
+
+                      </button>
+                      <% } %>
+                </div>
+              <% } %>
+                <% if(session.totalPlayers> arrayOfPlayers.length && session.active) { %>
+
+                  <div class=" bg-gray-200 flex items-center px-3 py-1 rounded-full space-x-2 text-gray-700">
+
+                    <% if( !arrayOfPlayers.includes(User.firstName)) { %>
+                      <button
+                        onclick="addPlayer('<%= session.id %>', ' <%= session.playerName %>', '<%= User.firstName %>')"
+                        class="hover:text-red-600 outline-none focus:outline-none"><span>Join</span>
+                      </button>
+                      <% } %>
+                  </div>
+                  <% } else { %>
+                    <div class="bg-gray-200 flex items-center px-3 py-1 rounded-full space-x-2 text-gray-700">
+                      <p class="text-red-700 font-medium">No Slot</p>
+                    </div>
+                    <% } %>
+                      <%if(arrayOfPlayers.includes(User.firstName)){ %>
+                        <div class="bg-gray-200 flex items-center px-3 py-1 rounded-full space-x-2 text-gray-700">
+                          <button onclick=" deletePlayer('<%=session.id %>', '<%= User.firstName %>', '<%= session.playerName %>')"
+                            class="text-red-700 font-medium outline-none focus:outline-none"><span>Leave</span>
+                          </button>
+                        </div>
+                        <% } %>
+
+
+    </div>
+    <% if(session.active && session.userId===User.id){ %>
+      <div class="flex items-center space-x-2 p-4">
+        <label for="reason" class="block text-sm font-medium text-gray-700">Reason to Cancel:</label>
+        <input type="text" id="cancel-reason-<%= session.id %>" name="reason" id="reason"
+          class="block shadow-sm sm:text-sm focus:ring-indigo-500 focus:border-indigo-500 border-gray-300 rounded-md">
+        <button type="button" onclick="cancelSession('<%= session.id %>')"
+          class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-500 focus:outline-none focus:bg-red-500">Cancel</button>
+      </div>
+      <% }else if (!session.active) { %>
+        <div>
+          <p class="text-red-700 font-medium">This session has been cancelled</p>
+          <p class="text-red-700 font-medium">Reason: <%= session.Reason %>
+          </p>
+        </div>
+        <% } %>
+          <button
+            class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50">
+            <a href="/sports/<%= session.sport %>" class="text-gray-700">Go back</a>
+          </button>
+  </div>
+</body>
+
+</html>

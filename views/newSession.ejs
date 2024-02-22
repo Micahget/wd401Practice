@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/styles.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="csrf-token" content="<%= csrfToken %>">
+    
+    <title><%= title %></title>
+</head>
+
+<body>
+    <div class="container  mx-auto p-6">
+        <a href="/scheduler"><h1 class="text-xl font-bold mb-4">Create a New Session</h1></a>
+        <form action="/newSession" method="post" class="bg-white p-4 rounded-lg shadow-md">
+          <% if(messages && messages.error && messages.error.length > 0)  { %>
+            <% for(var i=0; i<messages.error.length; i++) { %>
+                    <li class="text-red-600"> <%= messages.error[i] %></li>
+            <% } %>
+          <% } %>
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <div class="mb-4">
+            <label class="block text-gray-700 font-bold mb-2" for="date">
+              Date
+            </label>
+            <input class="shadow appearance-none border rounded  py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="date" type="date" name="date" >
+          </div>
+          <div class="mb-4">
+            <label class="block text-gray-700 font-bold mb-2" for="place">
+              Place
+            </label>
+            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="place" type="text" name="place" >
+          </div>
+          <div class="mb-4">
+            <label class="block text-gray-700 font-bold mb-2" for="totalPlayers">
+              Total Players
+            </label>
+            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="totalPlayers" type="number" name="totalPlayers" min="1" >
+          </div>
+          <div class="mb-4">
+            <label class="block text-gray-700 font-bold mb-2" for="playerName">
+              Players Name<span class="text-sm text-gray-500 ml-2 font-semibold">(If you want to add more than one player, separate them with a comma)</span>
+            </label>
+            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="playerName" type="text" name="playerName" >
+          </div>
+          <!--get the value of the sport from the url-->
+          <input class="hidden"  type="" name="sport" value="<%= sport %>">
+          <div class="flex items-center justify-between">
+            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
+              Create
+            </button>
+            <a class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800" href="/scheduler">
+              Cancel
+            </a>
+          </div>
+        </form>
+      </div>
+</body>
+
+</html>

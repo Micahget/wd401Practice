@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/styles.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="csrf-token" content="<%= csrfToken %>">
+    
+    <title><%= title %></title>
+</head>
+
+<body>
+    <div class="container mx-auto p-4">
+        <a href="/scheduler"><h1 class="text-xl font-bold mb-4">Update the Session</h1></a>
+        <form method="post" action="/updateSession/<%= id %>" class="bg-white p-4 rounded-lg shadow-md">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+          <div class="mb-4">
+            <label class="block text-gray-700 font-bold mb-2" for="date">
+              Date
+            </label>
+            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="date" type="date" name="date" required>
+          </div>
+          <div class="mb-4">
+            <label class="block text-gray-700 font-bold mb-2" for="place">
+              Place
+            </label>
+            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="place" type="text" name="place" required>
+          </div>
+          <div class="mb-4">
+            <label class="block text-gray-700 font-bold mb-2" for="playerName">
+              Player Name
+            </label>
+            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="playerName" type="text" name="playerName" required>
+          </div>
+          <div class="mb-4">
+            <label class="block text-gray-700 font-bold mb-2" for="totalPlayers">
+              Total Players(Comma Separated)
+            </label>
+            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="totalPlayers" type="number" name="totalPlayers" min="1" required>
+          </div>
+          <input class="hidden"  type="" name="sport" value="<%= sport %>">
+          <div class="flex items-center justify-between">
+            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
+              Update
+            </button>
+            <a class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800" href="/scheduler/">
+              Cancel
+            </a>
+          </div>
+        </form>
+      </div>
+</body>
+
+</html>

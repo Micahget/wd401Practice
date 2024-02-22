@@ -1,0 +1,80 @@
+<h1 class="text-2xl font-semibold mb-4 capitalize">
+  <%= title %>
+    <span id="count-overdue" class="border boarder-gray-300 rounded px-2 py-1 ml-2 text-sm text-gray-600 bg-purple-50">
+      <%= data.length %>
+    </span>
+</h1>
+<% if (data.length===0) { %>
+  <p class="text-gray-600">No <%= title %> found</p>
+  <% } else { %>
+
+    <table class="border-collapse w-auto">
+      <thead>
+        <tr>
+          <th class="text-left py-3 px-4 uppercase font-semibold text-sm border-b border-gray-600 bg-gray-100">Date
+          </th>
+          <th class="text-left py-3 px-4 uppercase font-semibold text-sm border-b border-gray-600 bg-gray-100">Place
+          </th>
+          <th class="text-left py-3 px-4 uppercase font-semibold text-sm border-b border-gray-600 bg-gray-100">
+            Slots Left
+          </th>
+          <th class="text-left py-3 px-4 uppercase font-semibold text-sm border-b border-gray-600 bg-gray-100">View
+            Detail
+          </th>
+          <% if(user.role=== 'superadmin' ) { %>
+          <th class="text-left py-3 px-4 uppercase font-semibold text-sm border-b border-gray-600 bg-gray-100">Created by:
+          </th>
+          <% } %>
+
+        </tr>
+      </thead>
+      <tbody>
+        <% data.forEach(session=> {
+          if (session.totalPlayers && session.place) { // Only display sessions with non-empty totalPlayers and place
+          %>
+          <tr class="border-b border-gray-400">
+            <td class="py-3 px-4 text-sm border-b border-gray-600">
+              <%= session.date %>
+            </td>
+            <td class="py-3 px-4 text-sm border-b border-gray-600">
+              <%= session.place %>
+            </td>
+            <td class="py-3 px-4 text-sm border-b border-gray-600">
+              <% 
+              const players = session.playerName.split(",").length 
+              const slotsLeft = session.totalPlayers - players
+              if (slotsLeft > 0) {  %>
+                <span class="text-green-500">
+                  <%= slotsLeft %> slots left
+                </span>
+                <% } else { %>
+                  <span class="text-red-500">
+                    Session Full
+                  </span>
+                  <% } %>
+
+            </td>
+            <td class="py-3 px-4 text-sm border-b border-gray-600">
+                <a href="/sessionDetail/<%= session.id %>"> <button id="<%= session.id %>"
+                    class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-4">
+                    View
+                  </button></a>
+            </td>
+          
+            <%  if(user.role=== 'superadmin' ) { 
+            allUsers.forEach(user=> { 
+              // display the username who created the session in which who ahve the same id as the session.userId
+              if (user.id === session.userId) { %>
+            <td class="py-3 px-4 text-sm border-b border-gray-600">
+              Name: <%= user.firstName %>
+              <br>
+              Email: <%= user.email %>
+            </td>
+            <% } }) } %>
+          </tr>
+          <% } }); %>
+      </tbody>
+
+    </table>
+
+    <% } %>

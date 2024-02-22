@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/styles.css">
+    <meta name="csrf-token" content="<%= csrfToken %>">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>
+        <%= title %>
+    </title>
+    <script>
+        function togglePasswordInput() {
+            var checkbox = document.getElementById('passwordCheckbox');
+            var passwordInputContainer = document.getElementById('passwordInputContainer');
+            var passwordInput = document.getElementById('passwordInput');
+
+            if (checkbox.checked) {
+                passwordInputContainer.style.display = 'block';
+            } else {
+                passwordInputContainer.style.display = 'none';
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <div class="grid grid-cols-6">
+
+        <div class="col-start-3 col-span-2">
+            <a href="/scheduler">
+                <h6 class="py-4 text-3xl font-bold mb-6">Signup as a new user</h6>
+            </a>
+
+            <form action="/users" method="POST">
+                <% if(messages && messages.error && messages.error.length> 0) { %>
+                    <% for(var i=0; i<messages.error.length; i++) { %>
+                        <li class="text-red-600">
+                            <%= messages.error[i] %>
+                        </li>
+                        <% } %>
+                            <% } %>
+
+                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                <div class="py-3">
+                                    <label for="firstName">First Name <span class="text-red-600">*</span></label>
+                                    <input type="text" name="firstName" placeholder="First Name"
+                                        class="border boarder-gray-300 text-gray-900 rounded p-2 w-full">
+                                </div>
+                                <div class="py-3">
+                                    <label for="lastName">Last Name</label>
+                                    <input type="text" name="lastName" placeholder="Last Name"
+                                        class="border boarder-gray-300 text-gray-900 rounded p-2 w-full">
+                                </div>
+                                <div class="py-3">
+                                    <label for="email">Email<span class="text-red-600">*</span></label>
+                                    <input type="text" name="email" placeholder="Email"
+                                        class="border boarder-gray-300 text-gray-900 rounded p-2 w-full">
+                                </div>
+                                
+                                <div class="py-3" >
+                                    <label for="password">Password<span class="text-red-600">*</span></label>
+                                    <input type="password" name="password" placeholder="password"
+                                        class="border boarder-gray-300 text-gray-900 rounded p-2 w-full">
+                                </div>
+                                <div class="py-3">
+                                    <label for="passwordCheckbox">Admin ? </label>
+                                    <input type="checkbox" id="passwordCheckbox" onclick="togglePasswordInput()">
+
+
+                                </div>
+                                <div class="py-3" id="passwordInputContainer" style="display: none;">
+                                    <label for="password">Admin Pass<span
+                                            class="text-sm text-gray-500 ml-2 font-semibold">(If you are Admin, Fill the
+                                            Admin Pass Code)</span></label>
+                                    <input type="text" name="adminPass" placeholder="Admin Pass"
+                                        class="border boarder-gray-300 text-gray-900 rounded p-2 w-full">
+                                </div>
+
+                                <div class="py-3">
+                                    <button type="submit"
+                                        class="bg-blue-500 hover:bg-blue-800 text-white rounded py-2 px-5 font-meduim">Sign
+                                        Up</button>
+
+                                </div>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>
