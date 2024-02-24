@@ -131,7 +131,7 @@ passport.deserializeUser(function (id, done) {
 
 const adminAccessControl = async (request, response, next) => {
     const user = await UserAccount.findOne({ where: { email: request.user.email } })
-    console.log("this is the user", user, "this is the user role", user.role)
+    // console.log("this is the user", user, "this is the user role", user.role)
     // if the user role is admin or super admin then allow the user to access the page
     if (user.role === 'admin' || user.role === 'superadmin') {
         return next()
@@ -400,7 +400,7 @@ app.get('/displayUsers',connectEnsureLogin.ensureLoggedIn(), adminAccessControl,
     })
 
 app.get('/newSport',
-    connectEnsureLogin.ensureLoggedIn(), adminAccessControl, (request, response) => {
+    connectEnsureLogin.ensureLoggedIn(),(request, response) => {
         if (request.accepts('html')) {
             response.render('newSport', {
                 title: 'newSport',
@@ -425,8 +425,9 @@ app.post('/newSport', async (request, response) => {
 
     try {
         const sport = await Sessions.addSession({
-            sport: request.body.sport,
-        })
+          sport: request.body.sport,
+        //   csrfToken: request.csrfToken(),
+        });
         console.log(sport)
         return response.redirect('/scheduler')
     }
@@ -447,7 +448,7 @@ app.get('/sports/:sport',
         const user = request.user
         const userSession = await Sessions.getSessionsByUserId(user.id, sport)
         const inactiveSession = await Sessions.getInactiveSessions(sport)
-        console.log('this is the user', user)
+        // console.log('this is the user', user.firstName)
         
 
         if (request.accepts('html')) {
