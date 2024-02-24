@@ -1,9 +1,9 @@
 name: Configuring a Node.js application with a PostgreSQL database With Discord Notifier
 on: push
 env:
-  PG_DATABASE: sp-sc-dev
-  PG_USER: postgres
-  PG_PASSWORD: mypostgres
+  PG_DATABASE: ${{ secrets.DEV_DATABASE}}
+  PG_USER: ${{ secrets.DEV_USERNAME }}
+  PG_PASSWORD: ${{ secrets.DEV_PASSWORD }}
 jobs:
   # Label of the container job
   run-tests:
@@ -18,9 +18,9 @@ jobs:
         image: postgres:11.7
         # Provide the password for postgres
         env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: mypostgres
-          POSTGRES_DB: sp-sc-dev
+          POSTGRES_USER: ${{ secrets.DEV_USERNAME }}
+          POSTGRES_PASSWORD: ${{ secrets.DEV_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.DEV_DATABASE}}
         # Set health checks to wait until postgres has started
         options: >-
           --health-cmd pg_isready
