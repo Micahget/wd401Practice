@@ -25,10 +25,9 @@ const login = async (agent, username, password) => {
 describe("Sport Scheduler", function () {
   beforeAll(async () => {
     await db.sequelize.sync({ force: true });
-    server = app.listen(4000, () => { }); // we use differet port for testing to avoid conflicts
+    server = app.listen(4000, () => {}); // we use differet port for testing to avoid conflicts
     agent = request.agent(server);
   });
-
 
   afterAll(async () => {
     try {
@@ -39,8 +38,8 @@ describe("Sport Scheduler", function () {
     }
   });
 
-  // test to sign up an admin user
-  test("Signs up an admin ", async () => {
+  // test to sign up  user
+  test("Signs up an user ", async () => {
     let res = await agent.get("/signup");
     const csrfToken = extractCsrfToken(res);
     res = await agent.post("/users").send({
@@ -48,13 +47,12 @@ describe("Sport Scheduler", function () {
       lastName: "Smith",
       email: "John@gmail.com",
       password: "123456",
-      role: "admin",
+      role: "user",
       _csrf: csrfToken,
     });
     console.log("the details of the new user are: ", res.body);
     expect(res.statusCode).toBe(302);
   });
-
 
   // // sign out test
   test("sign out", async () => {
@@ -79,12 +77,26 @@ describe("Sport Scheduler", function () {
       place: "Cairo",
       playerName: "John, Smith, Mark",
       totalPlayers: 10,
-      sport: "Football",  
+      sport: "Football",
       _csrf: csrfToken,
     });
     console.log("the details of the new session are: ", response.body);
     expect(response.statusCode).toBe(302);
-  }); 
+  });
 
+  // add new sport
+  test("add new Sport", async () => {
+    const agent = request.agent(server);
+    await login(agent, "John@gmail.com", "123456");
+    const validSport = "boxing";
 
+    let res = await agent.get("/newSport");
+    const csrfToken = extractCsrfToken(res);
+    const response = await agent.post("/newSport").send({
+      sport: validSport,
+      _csrf: csrfToken,
+    });
+    console.log("The details of the sport added is :", response.body);
+    expect(response.statusCode).toBe(302);
+  });
 });

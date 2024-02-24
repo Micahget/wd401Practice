@@ -400,7 +400,7 @@ app.get('/displayUsers',connectEnsureLogin.ensureLoggedIn(), adminAccessControl,
     })
 
 app.get('/newSport',
-    connectEnsureLogin.ensureLoggedIn(), adminAccessControl, (request, response) => {
+    connectEnsureLogin.ensureLoggedIn(), (request, response) => {
         if (request.accepts('html')) {
             response.render('newSport', {
                 title: 'newSport',
