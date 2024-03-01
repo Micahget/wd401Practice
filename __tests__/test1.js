@@ -25,7 +25,7 @@ const login = async (agent, username, password) => {
 describe("Sport Scheduler", function () {
   beforeAll(async () => {
     await db.sequelize.sync({ force: true });
-    server = app.listen(4000, () => {}); // we use differet port for testing to avoid conflicts
+    server = app.listen(4000, () => { }); // we use differet port for testing to avoid conflicts
     agent = request.agent(server);
   });
 
@@ -43,6 +43,7 @@ describe("Sport Scheduler", function () {
     let res = await agent.get("/signup");
     const csrfToken = extractCsrfToken(res);
     res = await agent.post("/users").send({
+      id: 1,
       firstName: "John",
       lastName: "Smith",
       email: "John@gmail.com",
@@ -50,7 +51,6 @@ describe("Sport Scheduler", function () {
       role: "user",
       _csrf: csrfToken,
     });
-    console.log("the details of the new user are: ", res.body);
     expect(res.statusCode).toBe(302);
   });
 
@@ -70,18 +70,22 @@ describe("Sport Scheduler", function () {
     const agent = request.agent(server);
     await login(agent, "John@gmail.com", "123456");
 
-    let res = await agent.get("/newSession/Football");
+    let res = await agent.get("/newSession/Football"); // get the form
     const csrfToken = extractCsrfToken(res);
-    const response = await agent.post("/newSession").send({
+    res = await agent.post("/newSession").send({
+      // post the form
       date: new Date().toISOString(),
+      id: 1,
       place: "Cairo",
       playerName: "John, Smith, Mark",
       totalPlayers: 10,
       sport: "Football",
+      userId: 1,
+      active: true,
+      Reason: null,
       _csrf: csrfToken,
     });
-    console.log("the details of the new session are: ", response.body);
-    expect(response.statusCode).toBe(302);
+    expect(res.statusCode).toBe(302);
   });
 
   // add new sport
@@ -92,11 +96,12 @@ describe("Sport Scheduler", function () {
 
     let res = await agent.get("/newSport");
     const csrfToken = extractCsrfToken(res);
-    const response = await agent.post("/newSport").send({
+    res = await agent.post("/newSport").send({
       sport: validSport,
       _csrf: csrfToken,
     });
-    console.log("The details of the sport added is :", response.body);
-    expect(response.statusCode).toBe(302);
-  });
+    expect(res.statusCode).toBe(302);
+  }
+  );
 });
+

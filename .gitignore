@@ -3,3 +3,4 @@ node_modules
 docker-compose.yml
 docker-compose-prod.yml
 Dockerfile
+ecosystem.config.js

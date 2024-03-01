@@ -23,6 +23,8 @@ module.exports = (sequelize, DataTypes) => {
         totalPlayers: totalPlayers,
         sport: sport,
         userId: userId,
+        active: true,
+        Reason: null
       })
     }
 

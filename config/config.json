@@ -1,4 +1,11 @@
 {
+  "developmentDocker": {
+    "username": "DEV_USERNAME",
+    "password": "DEV_PASSWORD",
+    "database": "DEV_DATABASE",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  },
   "development": {
     "username": "postgres",
     "password": "mypostgres",
@@ -6,16 +13,22 @@
     "host": "127.0.0.1",
     "dialect": "postgres"
   },
-    "test": {
-      "username": "postgres",
-      "password": "mypostgres",
-      "database": "sp-sc-test",
-      "host": "127.0.0.1",
-      "dialect": "postgres"
-    },
-    "production": {
-      "use_env_variable": "DATABASE_URL1",
-      "dialect": "postgres"
-    }
+  "productionDocker": {
+    "username": "PROD_USERNAME",
+    "password": "PROD_PASSWORD",
+    "database": "PROD_DATABASE",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  },
+  "test": {
+    "username": "postgres",
+    "password": "mypostgres",
+    "database": "sp-sc-test",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  },
+  "production1": {
+    "use_env_variable": "DATABASE_URL1",
+    "dialect": "postgres"
   }
-  
+}

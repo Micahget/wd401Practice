@@ -112,14 +112,14 @@ passport.use('admin-local', new LocalStrategy({
 
 // here we are serializing and deserializing the user
 passport.serializeUser(function (user, done) {
-    console.log("serializeUser", user.id)
+    // console.log("serializeUser", user.id)
     done(null, user.id);
 });
 
 passport.deserializeUser(function (id, done) {
     UserAccount.findByPk(id)
         .then((user) => {
-            console.log("deserializing user in session ", user.id);
+            // console.log("deserializing user in session ", user.id);
             done(null, user);
         })
         .catch((error) => {
@@ -131,7 +131,7 @@ passport.deserializeUser(function (id, done) {
 
 const adminAccessControl = async (request, response, next) => {
     const user = await UserAccount.findOne({ where: { email: request.user.email } })
-    console.log("this is the user", user, "this is the user role", user.role)
+    // console.log("this is the user", user, "this is the user role", user.role)
     // if the user role is admin or super admin then allow the user to access the page
     if (user.role === 'admin' || user.role === 'superadmin') {
         return next()
@@ -174,9 +174,9 @@ app.get("/signup", function (request, response) {
 });
 
 //   render the users page
-app.get("/users", function (request, response) {
-    response.render("signup", { title: "login", csrfToken: request.csrfToken() });
-});
+// app.get("/users", function (request, response) {
+//     response.render("signup", { title: "login", csrfToken: request.csrfToken() });
+// });
 // render the login page
 app.get("/login", function (request, response) {
     response.render("login", { title: "Login", csrfToken: request.csrfToken() }); // here the title is located in the login.ejs file
@@ -202,7 +202,7 @@ app.post("/users", async function (request, response) {
     const superAdminPassCode = 'bosssuperadmin'
     const adminPass = request.body.adminPass
     const role = adminPass === adminPassCode ? 'admin' : adminPass === superAdminPassCode ? 'superadmin' : 'user'
-    console.log("First Name", request.body.firstName)
+    // console.log("First Name", request.body.firstName)
     try {
         const user = await UserAccount.create({
             firstName: request.body.firstName,
@@ -290,7 +290,7 @@ app.get('/scheduler',
 app.get('/newSession/:sport',
     connectEnsureLogin.ensureLoggedIn(), (request, response) => {
         const sport = request.params.sport
-        console.log(sport)
+        // console.log(sport)
         if (request.accepts('html')) {
             response.render('newSession', {
                 title: 'newSession',
@@ -309,13 +309,13 @@ app.get('/newSession/:sport',
 
 app.post('/newSession', async (request, response) => {
     const { date, place, playerName, totalPlayers, sport } = request.body
-    console.log('thisssssssssssssssss', date, place, playerName, totalPlayers, sport)
+    // console.log('thisssssssssssssssss', date, place, playerName, totalPlayers, sport)
     if (!date || !place || !playerName || !totalPlayers) {
         request.flash('error', 'Please fill all the fields')
         return response.redirect('/newSession/' + sport)
     } 
     // add regex for the name to be atleast 3 characters and should contain letters
-    const nameRegex = /^[a-zA-Z]{3,}$/;
+    const nameRegex = /^[a-zA-Z\s,]{3,}$/
     if (!nameRegex.test(playerName)) {
         request.flash('error', 'Please enter a valid player name')
         return response.redirect('/newSession/' + sport)
@@ -335,7 +335,9 @@ app.post('/newSession', async (request, response) => {
             playerName: playerName,
             totalPlayers: totalPlayers,
             sport: sport,
-            userId: userId
+            userId: userId,
+            active: true,
+            Reason: ""
         })
         return response.redirect('/sports/' + sport)
     } catch (error) {
@@ -357,7 +359,7 @@ app.get('/sessionReport', connectEnsureLogin.ensureLoggedIn(), adminAccessContro
         const futureSessions = await Sessions.getFutureSessions()
         const pastSessions = await Sessions.getPassedSessions()
         const todaySessions = await Sessions.getTodaySessions()
-        console.log('this is the user', user.email)
+        // console.log('this is the user', user.email)
 
         if (request.accepts('html')) {
             response.render('sessionReport', {
@@ -427,7 +429,7 @@ app.post('/newSport', async (request, response) => {
         const sport = await Sessions.addSession({
             sport: request.body.sport,
         })
-        console.log(sport)
+        // console.log(sport)
         return response.redirect('/scheduler')
     }
     catch (error) {
@@ -447,6 +449,7 @@ app.get('/sports/:sport',
         const user = request.user
         const userSession = await Sessions.getSessionsByUserId(user.id, sport)
         const inactiveSession = await Sessions.getInactiveSessions(sport)
+        console.log("this is " ,activeSession)
         console.log('this is the user', user)
         
 
@@ -484,7 +487,7 @@ app.get('/sports/:sport',
 //delete a sport from the database whcih will delete every session which have same sport name
 app.delete('/', async (request, response) => {
     const sport = request.body.sport
-    console.log(sport)
+    // console.log(sport)
     try {
         const deleted = await Sessions.deleteSessionsBySport(sport)
         return response.json({ success: true });
@@ -557,13 +560,13 @@ app.get('/sessionDetail/:id',
         const session = await Sessions.getSessionById(id)
         const user = request.user
         const dbUser = await UserAccount.getAllUsers()
-        console.log(id)
+        // console.log(id)
         if (request.accepts('html')) {
             response.render('sessionDetail', {
                 title: 'sessionDetail',
                 session: session,
                 User: user,
-                dbUser: dbUser,
+                dbUser: dbUser, // this is the user from the database
                 csrfToken: request.csrfToken()
             })
         } else {
@@ -574,11 +577,11 @@ app.get('/sessionDetail/:id',
         }
     })
 
-// update a session from the database by id 
+// update a session from the database by id - Add user name using add button
 app.put('/sessionDetail/:id/', async (request, response) => {
     const id = request.params.id
     const name = request.body.playerName
-    console.log("updated naem: ", name)
+    // console.log("updated naem: ", name)
     try {
         const updated = await Sessions.updatePlayerNameById(id, name)
         return response.json({ success: true });
@@ -589,12 +592,12 @@ app.put('/sessionDetail/:id/', async (request, response) => {
     }
 })
 
-// update session by id
+// update session by id - disable the session by writing its reason
 app.delete('/sessionDetail/:id', async (request, response) => {
     const id = request.params.id
     const reason = request.body.reason
     // const active = request.body.active
-    console.log("reason: ", reason)
+    // console.log("reason: ", reason)
     try {
         const updated = await Sessions.cancelSessionById(id, reason)
         return response.json(updated);
