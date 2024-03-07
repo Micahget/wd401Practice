@@ -10,7 +10,7 @@
     "username": "postgres",
     "password": "mypostgres",
     "database": "sp-sc-test",
-    "host": "db",
+    "host": "127.0.0.1",
     "dialect": "postgres"
   },
    "production": {
