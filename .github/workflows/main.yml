@@ -60,49 +60,27 @@ jobs:
           npm run test
    #docker build and push to docker hub from the Dockerfile
   docker:
-    name: Docker Build and Push
+    needs: run-tests
     runs-on: ubuntu-latest
-    needs: # make sure the docker build is done AFTER the tests have completed
-      - run-tests
-    services:
-      docker:
-        image: docker:19.03.12
-        options: --privileged
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
+      - name: Checkout
+        uses: actions/checkout@v4
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-
+        uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-
+        uses: docker/setup-buildx-action@v3
       - name: Login to Docker Hub
-        uses: docker/login-action@v1
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Build Docker image
+        run: |
+          cd wd401practice && docker build -f Dockerfile --target production -t mikiyasget/sp-sc-prod:latest .
+      - name: Push Docker image to Docker Hub
+        run: |
+          cd todo-app && docker push mikiyasget/sp-sc-prod:latest
 
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          file: ./wd401practice/Dockerfile
-          push: true
-          platforms: linux/amd64,linux/arm64 # multi-platform build
-          tags: | # multi-platform build
-            dockercicd:latest
-            dockercicd:${{ github.sha }}
-      - name: Docker compose up
-        run: |
-          docker-compose up -d
-          sleep 5
-      - name: Create Database 
-        run: |
-          docker-compose -f docker-compose.yml exec app npx sequelize-cli db:drop
-          docker-compose -f docker-compose.yml exec app npx sequelize-cli db:create
-          docker-compose -f docker-compose.yml exec app npx sequelize-cli db:migrate
   #add notification to discord channel
   notify:
     name: Discord Notification
