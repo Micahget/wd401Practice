@@ -185,12 +185,12 @@ describe("Sport Scheduler", function () {
     res = await agent.get(`/sessionDetail/${1}`);
     expect(res.statusCode).toBe(200);
   });
-  // // list all Sports created
-  // test("list all sports", async () => {
-  //   const agent = request.agent(server);
-  //   await login(agent, "John@gmail.com", "123456");
-  //   let res = await agent.get("/schedulerer");
-  //   expect(res.statusCode).toBe(200);
-  // });
+  // list all Sports created
+  test("list all sports", async () => {
+    const agent = request.agent(server);
+    await login(agent, "John@gmail.com", "123456");
+    let res = await agent.get("/schedulerer");
+    expect(res.statusCode).toBe(200);
+  });
 });
 
