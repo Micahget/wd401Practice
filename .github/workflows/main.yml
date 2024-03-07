@@ -76,10 +76,10 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Build Docker image
         run: |
-          cd ../..  && docker build -f wd401practice/Dockerfile --target production -t mikiyasget/sp-sc-prod:latest .
+          cd ..  && docker build -f wd401practice/Dockerfile --target production -t mikiyasget/sp-sc-prod:latest .
       - name: Push Docker image to Docker Hub
         run: |
-          cd ../.. && docker push mikiyasget/sp-sc-prod:latest
+          cd .. && docker push mikiyasget/sp-sc-prod:latest
 
   #add notification to discord channel
   notify:
