@@ -1,5 +1,4 @@
 node_modules
 .env
 impCmd.txt
-.github/workflows/docker-ci-cd.yml
 connectDB.js
