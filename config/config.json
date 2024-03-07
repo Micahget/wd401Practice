@@ -1,16 +1,16 @@
 {
   "development": {
-    "username": "DEV_USERNAME",
-    "password": "DEV_PASSWORD",
-    "database": "DEV_DATABASE",
+    "username": "postgres",
+    "password": "mypostgres",
+    "database": "sp-sc-dev",
     "host": "db",
     "dialect": "postgres"
   },
   "test": {
-    "username": "TEST_USERNAME",
-    "password": "TEST_PASSWORD",
-    "database": "TEST_DATABASE",
-    "host": "db",
+    "username": "postgres",
+    "password": "mypostgres",
+    "database": "sp-sc-test",
+    "host": "127.0.0.1",
     "dialect": "postgres"
   },
    "production": {
