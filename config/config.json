@@ -2,7 +2,7 @@
   "development": {
     "username": "postgres",
     "password": "mypostgres",
-    "database": "sp-sc-dev",
+    "database": "sp-sc-prod",
     "host": "127.0.0.1",
     "dialect": "postgres"
   },
@@ -10,11 +10,18 @@
     "username": "postgres",
     "password": "mypostgres",
     "database": "sp-sc-test",
-    "host": "127.0.0.1",
+    "host": "db",
     "dialect": "postgres"
   },
    "production": {
     "use_env_variable": "DATABASE_URL",
+    "dialect": "postgres"
+  },
+  "production1": {
+    "username": "postgres",
+    "password": "mypostgres",
+    "database": "sp-sc-prod",
+    "host": "db",
     "dialect": "postgres"
   }
 }
