@@ -148,8 +148,8 @@ describe("Sport Scheduler", function () {
     res = await agent.get(`/sports/${validSport}`);
     expect(res.statusCode).toBe(200);
   });
-  // session details
-  test("session details", async () => {
+  // Display Details
+  test("Display Details", async () => {
     const agent = request.agent(server);
     await login(agent, "John@gmail.com", "123456");
 
@@ -186,5 +186,42 @@ describe("Sport Scheduler", function () {
     expect(res.statusCode).toBe(200);
   });
 
+  // session details
+  test("session Details", async () => {
+    const agent = request.agent(server);
+    await login(agent, "John@gmail.com", "123456");
+
+    // first create a sport to add a session to it
+    let validSport = "boxing";
+    let res = await agent.get("/newSport");
+    const csrfToken = extractCsrfToken(res);
+    res = await agent.post("/newSport").send({
+      sport: validSport,
+      _csrf: csrfToken,
+    });
+    expect(res.statusCode).toBe(302);
+
+    // then add a session to the sport
+    res = await agent.get(`/newSession/${validSport}`);
+    const csrfToken2 = extractCsrfToken(res);
+    res = await agent.post("/newSession").send({
+      // post the form
+      date: new Date().toISOString(),
+      id: 1,
+      place: "Cairo",
+      playerName: "John, Smith, Mark",
+      totalPlayers: 10,
+      sport: validSport,
+      userId: 1,
+      active: true,
+      Reason: null,
+      _csrf: csrfToken2,
+    });
+    expect(res.statusCode).toBe(302);
+
+    // now render sessionDetails
+    res = await agent.get(`/sessionDetail/${1}`);
+    expect(res.statusCode).toBe(200);
+  });
 });
 
